@@ -15,7 +15,7 @@ class Movie(models.Model):
     backdrop_path = models.CharField(max_length=150)
     voteavg = models.IntegerField()
     overview = models.TextField()
-    original_title = models.CharField(max_length=100, blank=True)
+    # original_title = models.CharField(max_length=100, blank=True)
     release_date = models.CharField(max_length=50)
     # director = models.CharField(max_length=100)
 

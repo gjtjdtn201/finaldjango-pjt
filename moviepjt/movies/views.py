@@ -26,7 +26,7 @@ def takeMovie(request):
                 backdrop_path = "https://image.tmdb.org/t/p/original" + resData.get('backdrop_path'),
                 voteavg = resData.get('vote_average'),
                 overview = resData.get('overview'),
-                original_title = resData.get('orginal_title'),
+                # original_title = resData.get('orginal_title'),
                 release_date = resData.get('release_date'),
             )
     return render(request, 'movies/index.html')
