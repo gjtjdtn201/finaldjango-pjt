@@ -29,6 +29,11 @@
             <h5 class="card-title">{{ movie.title }}</h5>
             <p class="card-text"><small class="text-muted">제작년도 : {{ movie.release_date }}</small></p>
             <p class="card-text"><small class="text-muted">평점 : {{ movie.voteavg }}점</small></p>
+            <div>
+              {% for gen in movie.genres.all %}
+                <button class="btn btn-secondary my-1">{{ gen.name }}</button>
+              {% endfor %}
+            </div>
             {% if request.user in movie.like_users.all %}
             <i class=" fas fa-heart fa-5x like-btn" data-pk="{{ movie.pk }}" style="color:red" ></i>
             {% else %}

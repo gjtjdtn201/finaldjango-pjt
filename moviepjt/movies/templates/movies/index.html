@@ -22,7 +22,10 @@
         <a href="{% url 'movies:movie_detail' recommend.pk %}">
           <img class="d-block mx-auto w-50" src="{{recommend.poster_path}}" alt="First slide">
           <div class="carousel-caption d-none d-md-block">
-            <h5><span class="bg-secondary p-1">{{ recommend.title }}</span></h5>
+            <h5><span class="bg-info p-1">{{ recommend.title }}</span></h5>
+            <p>{% for gen in recommend.genres.all %}
+              <button class="btn btn-secondary my-1 mx-1">{{ gen.name }}</button>
+            {% endfor %}</p>
           </div>
         </a>
         </div>
@@ -31,7 +34,10 @@
         <a href="{% url 'movies:movie_detail' recommend.pk %}">
           <img class="d-block mx-auto w-50" src="{{recommend.poster_path}}" alt="First slide">
           <div class="carousel-caption d-none d-md-block">
-            <h5><span class="bg-secondary p-1">{{ recommend.title }}</span></h5>
+            <h5><span class="bg-info p-1">{{ recommend.title }}</span></h5>
+            <p>{% for gen in recommend.genres.all %}
+              <button class="btn btn-secondary my-1 mx-1">{{ gen.name }}</button>
+            {% endfor %}</p>
           </div>
         </a>
       </div>
@@ -62,6 +68,11 @@
               <div class="card-body">
                 <h5 class="card-title text-center">{{ movie.title }}</h5>
                 <p class="card-text text-center text-dark">제작년도 : {{ movie.release_date }}</p>
+                <p class="card-text text-center">
+                  {% for gen in movie.genres.all %}
+                    <button class="btn btn-secondary my-1">{{ gen.name }}</button>
+                  {% endfor %}
+                </p>
               </div>
             </div>
           </a>

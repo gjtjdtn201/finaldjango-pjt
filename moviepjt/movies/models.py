@@ -20,7 +20,7 @@ class Movie(models.Model):
     release_date = models.CharField(max_length=50)
     # director = models.CharField(max_length=100)
 
-    # genres = models.ManyToManyField(Genre, related_name = 'movie_genre')
+    genres = models.ManyToManyField(Genre, related_name = 'movie_genre')
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="like_movies", blank=True)
 
     def __str__(self):

@@ -28,7 +28,7 @@ def takeMovie(request):
 
         for resData in resDatas:
             try:
-                Movie.objects.get_or_create(
+                movie = Movie(
                     title = resData.get('title'),
                     poster_path = "https://image.tmdb.org/t/p/original"+ resData.get('poster_path'),
                     movie_id = resData.get('id'),
@@ -37,8 +37,12 @@ def takeMovie(request):
                     overview = resData.get('overview'),
                     # original_title = resData.get('orginal_title'),
                     release_date = resData.get('release_date'),
-                    # genres = resData.get('genre_ids')
-                )
+                    )
+                movie.save()
+                genreItems = resData.get('genre_ids')
+                for i in genreItems:
+                    p1 = get_object_or_404(Genre, pk=i)
+                    movie.genres.add(p1)
             except:
                 continue
     
