@@ -1,8 +1,8 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% load static %}
 {% load bootstrap_pagination %}
 
 {% block content %}
-
+<link rel="stylesheet" href="{% static 'movies/style.css' %}" type="text/css" media="screen">
 {% if request.user.is_authenticated %}
 <h2 class='mt-5 text-info text-center'>추천 영화</h2>
 <div id="carouselExampleIndicators" class="carousel slide bg-dark" data-ride="carousel">
@@ -56,14 +56,16 @@
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
 {% for movie in page_obj %}
         <div class="col mb-4">
+          <a href="{% url 'movies:movie_detail' movie.pk %}" class="text-decoration-none">
             <div class="card">
               <img src="{{movie.poster_path}}" class="card-img-top" alt="movie img1">
               <div class="card-body">
-                <h5 class="card-title text-center"><a href="{% url 'movies:movie_detail' movie.pk %}">{{ movie.title }}</a></h5>
-                <p class="card-text text-center">제작년도 : {{ movie.release_date }}</p>
+                <h5 class="card-title text-center">{{ movie.title }}</h5>
+                <p class="card-text text-center text-dark">제작년도 : {{ movie.release_date }}</p>
               </div>
             </div>
-          </div>
+          </a>
+        </div>
 {% endfor %}
     </div>
 </section>
@@ -72,7 +74,16 @@
 </ul>
 <hr>
 <script>
-
+var target = document.querySelectorAll(".card");
+ 
+    for(var i=0; i < target.length; i++){
+      target[i].addEventListener("mouseover",function(){
+        $(this).addClass('pulse animated');
+      });
+      target[i].addEventListener("mouseout",function(){
+        $(this).removeClass('pulse animated');
+      });
+    }
 </script>
 
 {% endblock %}
