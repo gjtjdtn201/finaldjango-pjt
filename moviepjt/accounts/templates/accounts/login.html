@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% load bootstrap4 %}
+
+{% block content %}
+<form action="" method='POST'>
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button class="btn btn-secondary"> 로그인 </button>
+</form>
+
+{% endblock %}

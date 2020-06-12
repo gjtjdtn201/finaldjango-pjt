@@ -13,23 +13,36 @@ def takeMovie(request):
 
     MYKEY = '2e55b602956681cb520a7d64930d1274'
 
+    genreURL = f'https://api.themoviedb.org/3/genre/movie/list?api_key={MYKEY}&language=ko-KR'
+    genreList = requests.get(genreURL)
+    genreDatas = genreList.json().get('genres')
+    for genreData in genreDatas:
+        Genre.objects.get_or_create(
+            id = genreData.get('id'),
+            name = genreData.get('name'))
+    
     for n in range(1, 7):
         movieURL = f'https://api.themoviedb.org/3/discover/movie?api_key={MYKEY}&language=ko-KR&page={str(n)}'
         movieList = requests.get(movieURL)
         resDatas = movieList.json().get('results')
 
         for resData in resDatas:
-            Movie.objects.get_or_create(
-                title = resData.get('title'),
-                poster_path = "https://image.tmdb.org/t/p/original"+ resData.get('poster_path'),
-                movie_id = resData.get('id'),
-                backdrop_path = "https://image.tmdb.org/t/p/original" + resData.get('backdrop_path'),
-                voteavg = resData.get('vote_average'),
-                overview = resData.get('overview'),
-                # original_title = resData.get('orginal_title'),
-                release_date = resData.get('release_date'),
-            )
-    return render(request, 'movies/index.html')
+            try:
+                Movie.objects.get_or_create(
+                    title = resData.get('title'),
+                    poster_path = "https://image.tmdb.org/t/p/original"+ resData.get('poster_path'),
+                    movie_id = resData.get('id'),
+                    backdrop_path = "https://image.tmdb.org/t/p/original" + resData.get('backdrop_path'),
+                    voteavg = resData.get('vote_average'),
+                    overview = resData.get('overview'),
+                    # original_title = resData.get('orginal_title'),
+                    release_date = resData.get('release_date'),
+                    # genres = resData.get('genre_ids')
+                )
+            except:
+                continue
+    
+    return redirect('movies:index')
 
 # 아래는 template 페이지
 def index(request):
@@ -54,6 +67,7 @@ def movie_detail(request, pk):
         'movie': movie,
         'genres': genres,
     }
+    print(genres)
     return render(request, 'movies/movie_detail.html', context)
 
 @user_passes_test(lambda u: u.is_superuser)
