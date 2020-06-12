@@ -2,61 +2,69 @@
 {% load bootstrap4 %}
 
 {% block content %}
-<h2 class='mt-5 text-info'>{{ movie.title }}</h2>
-<hr>
-
-<ul class="list-group">
-  <li class="list-group-item"><img src="{{movie.poster_path}}" class="card-img-top"></li>
-  <li class="list-group-item">원 제목 : {{ movie.original_title }}</li>
-  <li class="list-group-item">제작년도 : {{ movie.release_date }}</li>
-  <li class="list-group-item">평점 : {{ movie.voteavg }}점</li>
-
-  <li class="list-group-item">{{ movie.overview }}</li>
-  <li class="list-group-item">
-      {% if request.user in movie.like_users.all %}
-        <i class=" fas fa-heart fa-5x like-btn" data-pk="{{ movie.pk }}" style="color:red" ></i>
-        {% else %}
-        <i class=" far fa-heart fa-5x like-btn" data-pk="{{ movie.pk }}" style="color:gray" ></i>
-        {% endif %}
-        <span class="cnt-{{ movie.pk }}">{{ movie.like_users.all|length }}</span> 명이 이 영화를 좋아합니다.
-  </li>
-</ul>
-<br>
-{% if request.user.is_superuser %}
-<div class="d-flex mt-3">
+<div class="d-flex">
+<h2 class='text-info mb-0'>{{ movie.title }}</h2>
+  {% if request.user.is_superuser %}
+  <div class="d-flex ml-auto">
     <a href="{% url 'movies:movie_update' movie.pk %}">
         <button type="button" class="btn btn-secondary mr-2">수정</button>
     </a>
     <form action="{% url 'movies:movie_delete' movie.pk %}" method="POST">
         {% csrf_token %}
-        <input class="btn btn-secondary mb-5" type="submit" value="삭제">
+        <input class="btn btn-secondary" type="submit" value="삭제">
     </form>
+  </div>
+    {% endif %}
 </div>
-{% endif %}
 <hr>
+<ul class="list-group">
+  <li class="list-group-item">
+    <div class="card mb-3 border border-white">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <img src="{{ movie.poster_path }}" class="card-img" alt="movie-img">
+        </div>
+        <div class="col-md-8 pl-3">
+          <div class="card-body">
+            <h5 class="card-title">{{ movie.title }}</h5>
+            <p class="card-text"><small class="text-muted">제작년도 : {{ movie.release_date }}</small></p>
+            <p class="card-text"><small class="text-muted">평점 : {{ movie.voteavg }}점</small></p>
+            {% if request.user in movie.like_users.all %}
+            <i class=" fas fa-heart fa-5x like-btn" data-pk="{{ movie.pk }}" style="color:red" ></i>
+            {% else %}
+            <i class=" far fa-heart fa-5x like-btn" data-pk="{{ movie.pk }}" style="color:gray" ></i>
+            {% endif %}
+            <span class="cnt-{{ movie.pk }}">{{ movie.like_users.all|length }}</span> 명이 이 영화를 좋아합니다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </li>
+  <li class="list-group-item">{{ movie.overview }}</li>
+</ul>
 
 <p class="mb-5"></p>
 
- <script>
-    const likeBtns = document.querySelectorAll('.like-btn')
-    likeBtns.forEach(function(btn){
-      btn.addEventListener('click', function(event){
-        axios.get(`/movies/${btn.dataset.pk}/like/`)
-        .then(function(res){
-          console.log(res.data)
-          if (res.data.liked){
-            btn.style.color = 'crimson'
-          } else {
-              btn.style.color  = 'black'
-            }
-            const cntSpan = document.querySelector(`.cnt-${btn.dataset.pk}`)
-            cntSpan.innerText = res.data.count
-        })
-        .catch(function(err){
-          console.log(err)
-        })
-
+<script>
+  const likeBtns = document.querySelectorAll('.like-btn')
+  likeBtns.forEach(function(btn){
+    btn.addEventListener('click', function(event){
+      axios.get(`/movies/${btn.dataset.pk}/like/`)
+      .then(function(res){
+        console.log(res.data)
+        if (res.data.liked){
+          btn.style.color = 'crimson'
+        } else {
+            btn.style.color  = 'black'
+          }
+          const cntSpan = document.querySelector(`.cnt-${btn.dataset.pk}`)
+          cntSpan.innerText = res.data.count
       })
+      .catch(function(err){
+        console.log(err)
+      })
+
     })
-  </script>
-  {% endblock %}
+  })
+</script>
+{% endblock %}

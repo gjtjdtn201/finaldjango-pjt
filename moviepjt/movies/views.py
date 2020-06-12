@@ -62,12 +62,12 @@ def index(request):
 
 def movie_detail(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
-    genres = movie.genres.all()
+    # genres = movie.genres.all()
     context = {
         'movie': movie,
-        'genres': genres,
+        # 'genres': genres,
     }
-    print(genres)
+    # print(genres)
     return render(request, 'movies/movie_detail.html', context)
 
 @user_passes_test(lambda u: u.is_superuser)
