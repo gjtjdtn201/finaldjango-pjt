@@ -45,7 +45,7 @@ def takeMovie(request):
                         name = director_name
                     )
                     break
-            
+            # 감독을 못찾았다면 임의값 반환
             if not chk1:
                 moviedirector = get_object_or_404(Director, pk=9999999)
 
@@ -61,7 +61,20 @@ def takeMovie(request):
                 mdirector = moviedirector,
                 release_date = resData.get('release_date'),
                 )
+            # 영화배우 추가 파트
+            castDatas = creditsData.json().get('cast')
+            for i in range(3):
+                actor_name = castDatas[i].get('name')
+                actor_id = castDatas[i].get('id')
+                profile_path = "https://image.tmdb.org/t/p/w300" + castDatas[i].get('profile_path')
+                movieactor, chk3 = Actor.objects.get_or_create(
+                    id = actor_id,
+                    name = actor_name,
+                    profile_path = profile_path
+                )
+                movie.actors.add(movieactor)
 
+            # 장르 추가 파트
             genreItems = resData.get('genre_ids')
             for i in genreItems:
                 p1 = get_object_or_404(Genre, pk=i)
@@ -71,7 +84,7 @@ def takeMovie(request):
 
 # 아래는 template 페이지
 def index(request):
-    movies = Movie.objects.order_by('-pk')
+    movies = Movie.objects.order_by('pk')
 
     paginator = Paginator(movies, 12)
     page_number = request.GET.get('page')
