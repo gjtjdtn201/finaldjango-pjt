@@ -29,15 +29,19 @@
             <h5 class="card-title">{{ movie.title }}</h5>
             <p class="card-text"><small class="text-muted">제작년도 : {{ movie.release_date }}</small></p>
             <p class="card-text"><small class="text-muted">평점 : {{ movie.voteavg }}점</small></p>
-            <div>
+            {% if not movie.mdirector.name == '없음' %}
+            <p class="card-text"><small class="text-muted">감독 : {{ movie.mdirector }}</small></p>
+            {% else %}
+            {% endif %}
+            <div class="mb-1">
               {% for gen in movie.genres.all %}
                 <button class="btn btn-secondary my-1">{{ gen.name }}</button>
               {% endfor %}
             </div>
             {% if request.user in movie.like_users.all %}
-            <i class=" fas fa-heart fa-5x like-btn" data-pk="{{ movie.pk }}" style="color:red" ></i>
+            <i class=" fas fa-heart fa-3x like-btn" data-pk="{{ movie.pk }}" style="color:red" ></i>
             {% else %}
-            <i class=" far fa-heart fa-5x like-btn" data-pk="{{ movie.pk }}" style="color:gray" ></i>
+            <i class=" far fa-heart fa-3x like-btn" data-pk="{{ movie.pk }}" style="color:gray" ></i>
             {% endif %}
             <span class="cnt-{{ movie.pk }}">{{ movie.like_users.all|length }}</span> 명이 이 영화를 좋아합니다.
           </div>

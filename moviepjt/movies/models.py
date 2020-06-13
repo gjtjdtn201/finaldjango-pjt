@@ -22,10 +22,10 @@ class Movie(models.Model):
     # backdrop_path = models.CharField(max_length=150)
     voteavg = models.IntegerField()
     overview = models.TextField()
-    # original_title = models.CharField(max_length=100, default='')
+    original_title = models.CharField(max_length=100, default='')
     release_date = models.CharField(max_length=50)
-    
-    director = models.ManyToManyField(Director, related_name='movie_director')
+
+    mdirector = models.ForeignKey(Director, on_delete=models.CASCADE)
     genres = models.ManyToManyField(Genre, related_name = 'movie_genre')
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="like_movies", blank=True)
 

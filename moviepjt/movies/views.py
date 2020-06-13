@@ -20,47 +20,48 @@ def takeMovie(request):
         Genre.objects.get_or_create(
             id = genreData.get('id'),
             name = genreData.get('name'))
-    # tmp, chk2 = Director.objects.get_or_create(
-    #     id = 9999999,
-    #     name = '없음'
-    # )
-    for n in range(1, 7):
+    tmp, chk2 = Director.objects.get_or_create(
+        id = 9999999,
+        name = '없음'
+    )
+    for n in range(1, 3):
         movieURL = f'https://api.themoviedb.org/3/discover/movie?api_key={MYKEY}&language=ko-KR&page={str(n)}'
         movieList = requests.get(movieURL)
         resDatas = movieList.json().get('results')
 
         for resData in resDatas:
-            # tmd_id = resData.get('id'),
+            tmd_id = resData.get('id')
             # 감독 가져오기
-            # CREDITS_URL = f"https://api.themoviedb.org/3/movie/{tmd_id}/credits?api_key={MYKEY}"
-            # creditsData = requests.get(CREDITS_URL)
-            # crewDatas = creditsData.json().get('crew')
-            # chk1 = False
-            # for i in range(10):
-            #     if crewDatas[i].get('job') == 'Director':
-            #         director_name = crewDatas[i].get('name')
-            #         director_id = crewDatas[i].get('id')
-            #         moviedirector, chk1 = crewDatas.objects.get_or_create(
-            #             id = director_id,
-            #             name = director_name
-            #         )
-            #         break
+            CREDITS_URL = f"https://api.themoviedb.org/3/movie/{tmd_id}/credits?api_key={MYKEY}"
+            creditsData = requests.get(CREDITS_URL)
+            crewDatas = creditsData.json().get('crew')
+            chk1 = False
+            for i in range(10):
+                if crewDatas[i].get('job') == 'Director':
+                    director_name = crewDatas[i].get('name')
+                    director_id = crewDatas[i].get('id')
+                    moviedirector, chk1 = Director.objects.get_or_create(
+                        id = director_id,
+                        name = director_name
+                    )
+                    break
+            
+            if not chk1:
+                moviedirector = get_object_or_404(Director, pk=9999999)
 
             # movie는 객체, flag는 생성 되었는지 여부
             movie, flag = Movie.objects.get_or_create(
                 title = resData.get('title'),
                 poster_path = "https://image.tmdb.org/t/p/original"+ resData.get('poster_path'),
-                movie_id = resData.get('id'),
+                movie_id = tmd_id,
                 # backdrop_path = "https://image.tmdb.org/t/p/original" + resData.get('backdrop_path'),
                 voteavg = resData.get('vote_average'),
                 overview = resData.get('overview'),
                 # original_title = resData.get('orginal_title'),
+                mdirector = moviedirector,
                 release_date = resData.get('release_date'),
                 )
-            # if chk1:
-            #     movie.director.add(moviedirector)
-            # else:
-            #     movie.director.add(tmp)
+
             genreItems = resData.get('genre_ids')
             for i in genreItems:
                 p1 = get_object_or_404(Genre, pk=i)
@@ -86,12 +87,9 @@ def index(request):
 
 def movie_detail(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
-    # genres = movie.genres.all()
     context = {
         'movie': movie,
-        # 'genres': genres,
     }
-    # print(genres)
     return render(request, 'movies/movie_detail.html', context)
 
 @user_passes_test(lambda u: u.is_superuser)
