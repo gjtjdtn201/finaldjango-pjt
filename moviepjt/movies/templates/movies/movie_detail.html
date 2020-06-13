@@ -30,8 +30,7 @@
             <p class="card-text"><small class="text-muted">제작년도 : {{ movie.release_date }}</small></p>
             <p class="card-text"><small class="text-muted">평점 : {{ movie.voteavg }}점</small></p>
             {% if not movie.mdirector.name == '없음' %}
-            <p class="card-text"><small class="text-muted">감독 : {{ movie.mdirector }}</small></p>
-            {% else %}
+              <p class="card-text"><small class="text-muted">감독 : {{ movie.mdirector }}</small></p>
             {% endif %}
             <div class="mb-1">
               {% for gen in movie.genres.all %}
