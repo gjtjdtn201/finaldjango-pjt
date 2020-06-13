@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from .models import Movie, Genre
+from .models import *
 from .forms import *
 from django.core.paginator import Paginator
 from django.http import JsonResponse
@@ -20,31 +20,51 @@ def takeMovie(request):
         Genre.objects.get_or_create(
             id = genreData.get('id'),
             name = genreData.get('name'))
-    
+    # tmp, chk2 = Director.objects.get_or_create(
+    #     id = 9999999,
+    #     name = '없음'
+    # )
     for n in range(1, 7):
         movieURL = f'https://api.themoviedb.org/3/discover/movie?api_key={MYKEY}&language=ko-KR&page={str(n)}'
         movieList = requests.get(movieURL)
         resDatas = movieList.json().get('results')
 
         for resData in resDatas:
-            try:
-                movie = Movie(
-                    title = resData.get('title'),
-                    poster_path = "https://image.tmdb.org/t/p/original"+ resData.get('poster_path'),
-                    movie_id = resData.get('id'),
-                    backdrop_path = "https://image.tmdb.org/t/p/original" + resData.get('backdrop_path'),
-                    voteavg = resData.get('vote_average'),
-                    overview = resData.get('overview'),
-                    # original_title = resData.get('orginal_title'),
-                    release_date = resData.get('release_date'),
-                    )
-                movie.save()
-                genreItems = resData.get('genre_ids')
-                for i in genreItems:
-                    p1 = get_object_or_404(Genre, pk=i)
-                    movie.genres.add(p1)
-            except:
-                continue
+            # tmd_id = resData.get('id'),
+            # 감독 가져오기
+            # CREDITS_URL = f"https://api.themoviedb.org/3/movie/{tmd_id}/credits?api_key={MYKEY}"
+            # creditsData = requests.get(CREDITS_URL)
+            # crewDatas = creditsData.json().get('crew')
+            # chk1 = False
+            # for i in range(10):
+            #     if crewDatas[i].get('job') == 'Director':
+            #         director_name = crewDatas[i].get('name')
+            #         director_id = crewDatas[i].get('id')
+            #         moviedirector, chk1 = crewDatas.objects.get_or_create(
+            #             id = director_id,
+            #             name = director_name
+            #         )
+            #         break
+
+            # movie는 객체, flag는 생성 되었는지 여부
+            movie, flag = Movie.objects.get_or_create(
+                title = resData.get('title'),
+                poster_path = "https://image.tmdb.org/t/p/original"+ resData.get('poster_path'),
+                movie_id = resData.get('id'),
+                # backdrop_path = "https://image.tmdb.org/t/p/original" + resData.get('backdrop_path'),
+                voteavg = resData.get('vote_average'),
+                overview = resData.get('overview'),
+                # original_title = resData.get('orginal_title'),
+                release_date = resData.get('release_date'),
+                )
+            # if chk1:
+            #     movie.director.add(moviedirector)
+            # else:
+            #     movie.director.add(tmp)
+            genreItems = resData.get('genre_ids')
+            for i in genreItems:
+                p1 = get_object_or_404(Genre, pk=i)
+                movie.genres.add(p1)
     
     return redirect('movies:index')
 
@@ -52,7 +72,7 @@ def takeMovie(request):
 def index(request):
     movies = Movie.objects.order_by('-pk')
 
-    paginator = Paginator(movies, 6)
+    paginator = Paginator(movies, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
