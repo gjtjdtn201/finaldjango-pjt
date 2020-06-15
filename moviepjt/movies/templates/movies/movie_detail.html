@@ -66,10 +66,12 @@
       <div class="card-group mx-4">
         {% for actor in movie.actors.all %}
           <div class="card">
+            <a href="{% url 'movies:actor_idx' actor.id %}">
             <img src="{{ actor.profile_path }}" class="card-img-top" alt="...">
             <div class="card-body">
               <h5 class="card-title text-center">{{ actor.name }}</h5>
             </div>
+            </a>
           </div>
         {% endfor %}
       </div> 

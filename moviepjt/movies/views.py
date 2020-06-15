@@ -8,11 +8,10 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import user_passes_test
 import requests
 
-# 영화 가져오는 로직
-def takeMovie(request):
+MYKEY = '2e55b602956681cb520a7d64930d1274'
+n = 1
 
-    MYKEY = '2e55b602956681cb520a7d64930d1274'
-
+def takeGenre(request):
     genreURL = f'https://api.themoviedb.org/3/genre/movie/list?api_key={MYKEY}&language=ko-KR'
     genreList = requests.get(genreURL)
     genreDatas = genreList.json().get('genres')
@@ -20,79 +19,85 @@ def takeMovie(request):
         Genre.objects.get_or_create(
             id = genreData.get('id'),
             name = genreData.get('name'))
+    return redirect('movies:index')
+
+# 영화 가져오는 로직
+def takeMovie(request):
+    global n
+
     # tmp, chk2 = Director.objects.get_or_create(
     #     id = 9999999,
     #     name = '없음'
     # )
-    for n in range(1, 5):
-        movieURL = f'https://api.themoviedb.org/3/discover/movie?api_key={MYKEY}&language=ko-KR&page={str(n)}'
-        movieList = requests.get(movieURL)
-        resDatas = movieList.json().get('results')
 
-        for resData in resDatas:
-            tmd_id = resData.get('id')
-            # 감독 가져오기
-            CREDITS_URL = f"https://api.themoviedb.org/3/movie/{tmd_id}/credits?api_key={MYKEY}"
-            creditsData = requests.get(CREDITS_URL)
-            # crewDatas = creditsData.json().get('crew')
-            # chk1 = False
-            # for i in range(10):
-            #     if crewDatas[i].get('job') == 'Director':
-            #         director_name = crewDatas[i].get('name')
-            #         director_id = crewDatas[i].get('id')
-            #         moviedirector, chk1 = Director.objects.get_or_create(
-            #             id = director_id,
-            #             name = director_name
-            #         )
-            #         break
-            # # 감독을 못찾았다면 임의값 반환
-            # if not chk1:
-            #     moviedirector = get_object_or_404(Director, pk=9999999)
-            # try:
-            #     original = resData.get('original_title')
-            # except:
-            #     original = resData.get('title')
+    movieURL = f'https://api.themoviedb.org/3/discover/movie?api_key={MYKEY}&language=ko-KR&page={str(n)}'
+    movieList = requests.get(movieURL)
+    resDatas = movieList.json().get('results')
 
-            # movie는 객체, flag는 생성 되었는지 여부
-            movie = Movie.objects.create(
-                title = resData.get('title'),
-                poster_path = "https://image.tmdb.org/t/p/original"+ resData.get('poster_path'),
-                movie_id = tmd_id,
-                # backdrop_path = "https://image.tmdb.org/t/p/original" + resData.get('backdrop_path'),
-                voteavg = resData.get('vote_average'),
-                overview = resData.get('overview'),
-                original_title = resData.get('original_title'),
-                # mdirector = moviedirector,
-                release_date = resData.get('release_date'),
+    for resData in resDatas:
+        tmd_id = resData.get('id')
+        # 감독 가져오기
+        CREDITS_URL = f"https://api.themoviedb.org/3/movie/{tmd_id}/credits?api_key={MYKEY}"
+        creditsData = requests.get(CREDITS_URL)
+        # crewDatas = creditsData.json().get('crew')
+        # chk1 = False
+        # for i in range(10):
+        #     if crewDatas[i].get('job') == 'Director':
+        #         director_name = crewDatas[i].get('name')
+        #         director_id = crewDatas[i].get('id')
+        #         moviedirector, chk1 = Director.objects.get_or_create(
+        #             id = director_id,
+        #             name = director_name
+        #         )
+        #         break
+        # # 감독을 못찾았다면 임의값 반환
+        # if not chk1:
+        #     moviedirector = get_object_or_404(Director, pk=9999999)
+        # try:
+        #     original = resData.get('original_title')
+        # except:
+        #     original = resData.get('title')
+
+        # movie는 객체, flag는 생성 되었는지 여부
+        movie = Movie.objects.create(
+            title = resData.get('title'),
+            poster_path = "https://image.tmdb.org/t/p/original"+ resData.get('poster_path'),
+            movie_id = tmd_id,
+            # backdrop_path = "https://image.tmdb.org/t/p/original" + resData.get('backdrop_path'),
+            voteavg = resData.get('vote_average'),
+            overview = resData.get('overview'),
+            original_title = resData.get('original_title'),
+            # mdirector = moviedirector,
+            release_date = resData.get('release_date'),
+            )
+
+        # 영화배우 추가 파트
+        castDatas = creditsData.json().get('cast')
+        for i in range(6):
+            try:
+                actor_name = castDatas[i].get('name')
+                actor_id = castDatas[i].get('id')
+                profile_path = "https://image.tmdb.org/t/p/w300" + castDatas[i].get('profile_path')
+                movieactor, chk3 = Actor.objects.get_or_create(
+                    id = actor_id,
+                    name = actor_name,
+                    profile_path = profile_path
                 )
+                movie.actors.add(movieactor)
+            except:
+                continue
 
-            # 영화배우 추가 파트
-            castDatas = creditsData.json().get('cast')
-            for i in range(6):
-                try:
-                    actor_name = castDatas[i].get('name')
-                    actor_id = castDatas[i].get('id')
-                    profile_path = "https://image.tmdb.org/t/p/w300" + castDatas[i].get('profile_path')
-                    movieactor, chk3 = Actor.objects.get_or_create(
-                        id = actor_id,
-                        name = actor_name,
-                        profile_path = profile_path
-                    )
-                    movie.actors.add(movieactor)
-                except:
-                    continue
-
-            # 장르 추가 파트
-            genreItems = resData.get('genre_ids')
-            for i in genreItems:
-                p1 = get_object_or_404(Genre, pk=i)
-                movie.genres.add(p1)
-    
+        # 장르 추가 파트
+        genreItems = resData.get('genre_ids')
+        for i in genreItems:
+            p1 = get_object_or_404(Genre, pk=i)
+            movie.genres.add(p1)
+    n += 1
     return redirect('movies:index')
 
 # 아래는 template 페이지
 def index(request):
-    movies = Movie.objects.order_by('pk')
+    movies = Movie.objects.order_by('-pk')
 
     paginator = Paginator(movies, 12)
     page_number = request.GET.get('page')
@@ -270,3 +275,10 @@ def comment_delete(request, pk, review_pk, comment_pk):
         comment.delete()
 
     return redirect('movies:review_detail', review.movie.id, review_pk)
+
+def actor_idx(request, actor_id):
+    actor = Actor.objects.get(id=actor_id)
+    context = {
+        'actor': actor,
+    }
+    return render(request, 'movies/actor.html', context)

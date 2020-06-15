@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+<div class="card mb-3" style="max-width: 540px;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="{{ actor.profile_path }}" class="card-img" alt="actor-img">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ actor.name }}</h5>
+        <!-- <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
+<section>
+  <h3 class="my-5 text-success">{{ actor.name }}님이 출연하는 영화 목록</h3>
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+    {% for movie in actor.movie_actor.all %}
+      <div class="col mb-4">
+        <a href="{% url 'movies:movie_detail' movie.pk %}" class="text-decoration-none">
+          <div class="card">
+            <img src="{{movie.poster_path}}" class="card-img-top" alt="movie img1">
+            <div class="card-body">
+              <h5 class="card-title text-center">{{ movie.title }}</h5>
+              <p class="card-text text-center">
+                {% for gen in movie.genres.all %}
+                  <button class="btn btn-secondary my-1">{{ gen.name }}</button>
+                {% endfor %}
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<p class="mb-5"></p>
+{% endblock %}
