@@ -24,12 +24,12 @@ class Actor(models.Model):
 
 class Movie(models.Model):
     title = models.CharField(max_length=100)
-    poster_path = models.CharField(max_length=150)
+    poster_path = models.CharField(max_length=150, default='')
     movie_id = models.IntegerField()
     # backdrop_path = models.CharField(max_length=150)
-    voteavg = models.IntegerField()
-    overview = models.TextField()
-    original_title = models.CharField(max_length=100, default='')
+    voteavg = models.IntegerField(default=0)
+    overview = models.TextField(default='')
+    original_title = models.CharField(max_length=100, null=True)
     release_date = models.CharField(max_length=50)
     # 감독은 한명만 할꺼니 1:1
     # mdirector = models.ForeignKey(Director, on_delete=models.CASCADE)
@@ -41,3 +41,18 @@ class Movie(models.Model):
     def __str__(self):
         return self.title
     
+class Review(models.Model):
+    title = models.CharField(max_length=100)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    rank = models.IntegerField()
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+class Comment(models.Model):
+    content = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

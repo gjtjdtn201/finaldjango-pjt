@@ -1,0 +1,57 @@
+{% extends 'base.html' %} {% load static %}
+{% load bootstrap4 %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'movies/style.css' %}" type="text/css" media="screen">
+<h2 class='mt-5 text-info'>Detail</h2>
+<hr>
+
+<ul class="list-group mb-3">
+  <li class="list-group-item">글 번호: {{ review.pk }}</li>
+  <li class="list-group-item">글 제목: {{ review.title }}</li>
+  <li class="list-group-item">작성 시간 : {{ review.created_at }}</li>
+  <li class="list-group-item">수정 시간 : {{ review.updated_at }}</li>
+  <li class="list-group-item">평점: <span class="star-prototype mr-2">{{ review.rank }}</span>{{ review.rank }}점</li>
+  <li class="list-group-item">글 내용: {{ review.content }}</li>
+</ul>
+<hr>
+
+<a href="{% url 'movies:movie_detail' movie.pk %}"><button class="btn btn-secondary mb-3">뒤로가기</button></a>
+<br>
+{% if review.user == request.user %}
+<div class="d-flex mt-3">
+    <a href="{% url 'movies:review_update' review.movie.id review.pk %}">
+        <button type="button" class="btn btn-secondary mr-2">수정</button>
+    </a>
+    <form action="{% url 'movies:review_delete' review.movie.id review.pk %}" method="POST">
+        {% csrf_token %}
+        <input class="btn btn-secondary mb-5" type="submit" value="삭제">
+    </form>
+</div>
+{% endif %}
+<ul class="list-group">
+{% for comment in review.comment_set.all %}
+  <li class="list-group-item">{{ comment.content }}</li>
+  <form action="{% url 'movies:comment_delete' review.movie.id review.pk comment.pk %}" method="POST">
+     {% csrf_token %}
+     <input  class="btn btn-secondary my-2" type="submit" value="삭제">
+  </form>
+{% endfor %}
+</ul>
+
+<form action="{% url 'movies:comment_create' review.movie.id review.pk %}" method="POST">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  <button class="btn btn-secondary">댓글쓰기</button>
+</form>
+
+<p class="mb-5"></p>
+<script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+<script>
+$.fn.generateStars = function() {
+  return this.each(function(i,e){$(e).html($('<span/>').width($(e).text()*8));});
+  };
+
+// 숫자 평점을 별로 변환하도록 호출하는 함수
+$('.star-prototype').generateStars();
+</script>
+{% endblock %}

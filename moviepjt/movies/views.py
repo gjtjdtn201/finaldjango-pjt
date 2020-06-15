@@ -48,6 +48,10 @@ def takeMovie(request):
             # # 감독을 못찾았다면 임의값 반환
             # if not chk1:
             #     moviedirector = get_object_or_404(Director, pk=9999999)
+            # try:
+            #     original = resData.get('original_title')
+            # except:
+            #     original = resData.get('title')
 
             # movie는 객체, flag는 생성 되었는지 여부
             movie = Movie.objects.create(
@@ -57,7 +61,7 @@ def takeMovie(request):
                 # backdrop_path = "https://image.tmdb.org/t/p/original" + resData.get('backdrop_path'),
                 voteavg = resData.get('vote_average'),
                 overview = resData.get('overview'),
-                # original_title = resData.get('orginal_title'),
+                original_title = resData.get('original_title'),
                 # mdirector = moviedirector,
                 release_date = resData.get('release_date'),
                 )
@@ -104,8 +108,13 @@ def index(request):
 
 def movie_detail(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
+    reviews = movie.review_set.all()
+    score = 0
+    for i in reviews:
+        score += i.rank
     context = {
         'movie': movie,
+        'score': score,
     }
     return render(request, 'movies/movie_detail.html', context)
 
@@ -165,3 +174,99 @@ def like(request, pk):
     }
 
     return JsonResponse(context)
+
+# review 생성
+@login_required
+def review_create(request, pk):
+    movie = get_object_or_404(Movie, pk=pk)
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.movie = movie
+            review.user = request.user
+            review.save()
+        return redirect('movies:review_detail', review.movie.id, review.pk)
+    else:
+        form = ReviewForm()
+    context = {
+        'form': form,
+        'movie': movie
+    }
+    return render(request, 'movies/review_form.html', context)
+
+# review 상세조회
+def review_detail(request, pk, review_pk):
+    movie = get_object_or_404(Movie, pk=pk)
+    review = get_object_or_404(Review, pk=review_pk)
+    form = CommentForm()
+    context = {
+        'movie': movie,
+        'review': review,
+        'form': form,
+    }
+    return render(request, 'movies/review_detail.html', context)
+
+# review 수정
+
+@login_required
+@require_POST
+def review_update(request, review_pk):
+    movie = get_object_or_404(Movie, pk=pk)
+    review = get_object_or_404(Review, pk=review_pk)
+    if request.user == review.user:
+        if request.method == 'POST':
+            form = ReviewForm(request.POST, instance=review)
+            if form.is_valid():
+                review = form.save(commit=False)
+                review.user = request.user
+                review.movie = movie
+                review.save()
+                return redirect('movies:review_detail', review.movie.id, review.pk)
+        else:
+            form = ReviewForm(instance=review)
+
+        context = {
+            'form' : form,
+        }
+        return render(request, 'movies/review_form.html', context)
+    else:
+        return redirect('movies:review_detail', review_pk)
+
+
+## review 삭제
+@login_required
+@require_POST
+def review_delete(request, review_pk):
+    review = get_object_or_404(Review, pk=review_pk)
+    if request.user == review.user:
+        review.delete()
+
+    return redirect('movies:movie_detail', review.pk)
+
+
+# comment 생성, require_POST활용
+@login_required
+@require_POST
+def comment_create(request, pk, review_pk):
+    review = get_object_or_404(Review, pk=review_pk)
+    comment_form = CommentForm(request.POST)
+
+    if comment_form.is_valid():
+        comment = comment_form.save(commit=False)
+        comment.review = review
+        comment.user = request.user
+        comment.save()
+
+    return redirect('movies:review_detail', review.movie.id, review_pk)
+
+# comment 삭제, require_POST활용
+@login_required
+@require_POST
+def comment_delete(request, pk, review_pk, comment_pk):
+    review = get_object_or_404(Review, pk=review_pk)
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    if request.user == comment.user:
+        comment.delete()
+
+    return redirect('movies:review_detail', review.movie.id, review_pk)

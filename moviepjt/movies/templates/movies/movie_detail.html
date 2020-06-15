@@ -1,7 +1,8 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% load static %}
 {% load bootstrap4 %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'movies/style.css' %}" type="text/css" media="screen">
 <div class="row col-lg-10 offset-lg-1">
   <div class="d-flex">
   <h2 class='text-info mb-0'>{{ movie.title }}</h2>
@@ -28,8 +29,11 @@
           <div class="col-md-8 pl-3">
             <div class="card-body">
               <h3 class="card-title">{{ movie.title }}</h3>
-              <h4 class="card-text"><small class="text-muted">제작년도 : {{ movie.release_date }}</small></h4>
-              <h4 class="card-text"><small class="text-muted">평점 : {{ movie.voteavg }}점</small></h4>
+              <h4 class="card-text"><small class="text-muted">제작 년도 : {{ movie.release_date }}</small></h4>
+              <h4 class="card-text"><small class="text-muted">원래 제목 : {{ movie.original_title }}</small></h4>
+              <h4 class="card-text"><small class="text-muted">영화 평점 : <span class="star-prototype mr-2">{{ movie.voteavg }}</span>{{ movie.voteavg }}점</small></h4>
+              <h4 class="card-text"><small class="text-muted">유저 평점 : <span class="star-prototype mr-2">{{ score }}</span>{{ score }}점
+              </small></h4>
               <h4 class="card-text">
                 <small class="text-muted">주연 : 
                   {% for actor in movie.actors.all %}
@@ -37,7 +41,7 @@
                   {% endfor %}
                 </small>
               </h4>
-              <div class="mb-3">
+              <div class="my-3">
                 {% for gen in movie.genres.all %}
                   <button class="btn btn-secondary my-1">{{ gen.name }}</button>
                 {% endfor %}
@@ -47,7 +51,7 @@
               {% else %}
                 <i class=" far fa-heart fa-3x like-btn" data-pk="{{ movie.pk }}" style="color:gray" ></i>
               {% endif %}
-              <span class="cnt-{{ movie.pk }}">{{ movie.like_users.all|length }}</span> 명이 이 영화를 좋아합니다.
+              <p class="cnt-{{ movie.pk }} ml-auto">{{ movie.like_users.all|length }} 명이 이 영화를 좋아합니다.</p>
             </div>
           </div>
         </div>
@@ -61,19 +65,48 @@
       <h3 class="text-primary m-3">주연 배우</h3>
       <div class="card-group mx-4">
         {% for actor in movie.actors.all %}
-        <div class="card">
-          <img src="{{ actor.profile_path }}" class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title text-center">{{ actor.name }}</h5>
+          <div class="card">
+            <img src="{{ actor.profile_path }}" class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title text-center">{{ actor.name }}</h5>
+            </div>
           </div>
-        </div>
         {% endfor %}
       </div> 
     </li>
   </ul>
 </div>
-<p class="mb-5"></p>
 
+<div class="d-flex">
+  <a href="{% url 'movies:review_create' movie.pk %}" class="ml-auto"><button class="btn btn-secondary">리뷰 쓰기</button></a>
+</div>
+<hr>
+<!-- 리뷰 게시글 -->
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">제목</th>
+      <th scope="col">작성자</th>
+      <th scope="col">작성 시간</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in movie.review_set.all %}
+    <tr>
+      <th scope="row">{{ forloop.counter }}</th>
+      <td><a href="{% url 'movies:review_detail' review.movie.id review.pk %}">{{ review.title }}</a></td>
+      <td><a href="{% url 'accounts:detail' review.user %}"><p>{{ review.user }}</p></a></td>
+      <td>{{ review.updated_at }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+<p class="mb-5"></p>
+<script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
 <script>
   const likeBtns = document.querySelectorAll('.like-btn')
   likeBtns.forEach(function(btn){
@@ -95,5 +128,11 @@
 
     })
   })
+  $.fn.generateStars = function() {
+  return this.each(function(i,e){$(e).html($('<span/>').width($(e).text()*8));});
+  };
+
+  // 숫자 평점을 별로 변환하도록 호출하는 함수
+  $('.star-prototype').generateStars();
 </script>
 {% endblock %}
