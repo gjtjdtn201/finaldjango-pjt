@@ -30,9 +30,6 @@
               <h3 class="card-title">{{ movie.title }}</h3>
               <h4 class="card-text"><small class="text-muted">제작년도 : {{ movie.release_date }}</small></h4>
               <h4 class="card-text"><small class="text-muted">평점 : {{ movie.voteavg }}점</small></h4>
-              {% if not movie.mdirector.name == '없음' %}
-                <h4 class="card-text"><small class="text-muted">감독 : {{ movie.mdirector }}</small></h4>
-              {% endif %}
               <h4 class="card-text">
                 <small class="text-muted">주연 : 
                   {% for actor in movie.actors.all %}
