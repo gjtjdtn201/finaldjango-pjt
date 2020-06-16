@@ -104,6 +104,29 @@ def index(request):
     page_obj = paginator.get_page(page_number)
 
     recommends = Movie.objects.order_by('?')[:10]
+
+    movie = Movie.objects.all()
+    actors = Actor.objects.all()
+    if request.method=="GET":
+        searchword = request.GET.get('searchword','')
+        resultMovie = []
+        
+        if searchword:
+            searchMovie = movie.filter(title__contains=searchword)
+            searchActor = actors.filter(name__contains=searchword)
+            if searchMovie:
+                # movie_count = searchMovie.count()
+                for c in range(len(searchMovie)):
+                    resultMovie.append({'title':searchMovie[c].title, 'id':searchMovie[c].id})
+                return render(request,'movies/searchresult.html',{'searchMovie':searchMovie,'resultMovie':resultMovie})
+            elif searchActor:
+                # actor_count = searchActor.count()
+                for c in range(len(searchActor)):
+                    resultMovie.append({'title':searchMovie[c].title, 'id':searchMovie[c].id})
+                return render(request,'movies/searchresult.html',{'searchMovie':searchMovie,'resultMovie':resultMovie})
+            else:
+                return render(request,'movies/searchresult.html',{'resultMovie':resultMovie})
+
     context = {
         'movies': movies,
         'page_obj' : page_obj,
@@ -282,3 +305,10 @@ def actor_idx(request, actor_id):
         'actor': actor,
     }
     return render(request, 'movies/actor.html', context)
+
+def community(request):
+    reviews = Review.objects.order_by('-pk')
+    context = {
+        'reviews': reviews,
+    }
+    return render(request, 'movies/community.html', context)

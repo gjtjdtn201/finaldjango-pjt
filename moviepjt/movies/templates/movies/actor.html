@@ -17,28 +17,24 @@
   </div>
 </div>
 <hr>
-<section>
-  <h3 class="my-5 text-success">{{ actor.name }}님이 출연하는 영화 목록</h3>
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+<section class="container bg-white mb-5 pb-4" style="border-radius: 20px;">
+  <h3 class="my-3 pt-3 text-info">{{ actor.name }}님이 출연하는 영화 목록</h3>
+
+  <div class="row border border-dark mt-3">
     {% for movie in actor.movie_actor.all %}
-      <div class="col mb-4">
-        <a href="{% url 'movies:movie_detail' movie.pk %}" class="text-decoration-none">
-          <div class="card">
-            <img src="{{movie.poster_path}}" class="card-img-top" alt="movie img1">
-            <div class="card-body">
-              <h5 class="card-title text-center">{{ movie.title }}</h5>
-              <p class="card-text text-center">
-                {% for gen in movie.genres.all %}
-                  <button class="btn btn-secondary my-1">{{ gen.name }}</button>
-                {% endfor %}
-              </p>
-            </div>
-          </div>
-        </a>
+      <div class=" col-md-4 col-lg-3 my-3" >
+        <div class="d-flex justify-content-center mt-4"> 
+          <a href="{% url 'movies:movie_detail' movie.id %}">
+            <img src="{{movie.poster_path}}"class="card-img-top" alt="movie-img" style="height:305px; width:200px">
+          </a>
+        </div>
+        <div class="card-body">
+          <h6 class="card-title text-center" ><strong>{{movie.title|truncatechars:15}}</strong></h6>
+          <hr>
+        </div>
       </div>
     {% endfor %}
-  </div>
+    </div>
 </section>
-
 <p class="mb-5"></p>
 {% endblock %}

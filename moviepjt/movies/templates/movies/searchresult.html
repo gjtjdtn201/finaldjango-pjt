@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-md-8 offset-2 mb-2">
+  <!--영화 검색 -->
+  <form method="GET" class="d-flex justify-content-center">
+      <input type="text" name="searchword" value="{{searchword}}" placeholder=" 작품 제목을 검색해보세요." 
+      class="w-75 p-2" style="border-radius: 20px;">
+      <input class="btn text-white mx-2" type="submit" value="검색" style=" border: 1px solid white; border-radius: 10px;">
+  </form>
+</div>
+<div class="p-4 container bg-white mb-5" style="border-radius: 20px;">
+  <br>
+  {% if resultMovie %}
+    <ul>
+      <h2 class="text-info">검색결과</h2>
+      <br>
+      {% for movie in resultMovie %}
+        <a class="h5 text-dark" href="{% url 'movies:movie_detail' movie.id %}">{{ movie.title }}</a>
+        <hr>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <ul><h3>결과가 없습니다.</h3></ul>
+  {% endif %}
+</div>
+{% endblock %} 

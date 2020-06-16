@@ -3,9 +3,10 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'movies/style.css' %}" type="text/css" media="screen">
+<div class='bg-white mb-5 container p-5' style="border-radius: 20px;">
 <div class="row col-lg-10 offset-lg-1">
   <div class="d-flex">
-  <h2 class='text-info mb-0'>{{ movie.title }}</h2>
+  <h2 class='text-info my-2'>{{ movie.title }}</h2>
     {% if request.user.is_superuser %}
     <div class="d-flex ml-auto">
       <a href="{% url 'movies:movie_update' movie.pk %}">
@@ -47,11 +48,11 @@
                 {% endfor %}
               </div>
               {% if request.user in movie.like_users.all %}
-                <i class=" fas fa-heart fa-3x like-btn" data-pk="{{ movie.pk }}" style="color:red" ></i>
+                <i class=" fas fa-heart fa-2x like-btn" data-pk="{{ movie.pk }}" style="color:red" ></i>
               {% else %}
-                <i class=" far fa-heart fa-3x like-btn" data-pk="{{ movie.pk }}" style="color:gray" ></i>
+                <i class=" far fa-heart fa-2x like-btn" data-pk="{{ movie.pk }}" style="color:gray" ></i>
               {% endif %}
-              <p class="cnt-{{ movie.pk }} ml-auto">{{ movie.like_users.all|length }} 명이 이 영화를 좋아합니다.</p>
+              <span class="cnt-{{ movie.pk }}">{{ movie.like_users.all|length }} 명이 이 영화를 좋아합니다.</span>
             </div>
           </div>
         </div>
@@ -104,7 +105,7 @@
     {% endfor %}
   </tbody>
 </table>
-
+</div>
 
 
 <p class="mb-5"></p>

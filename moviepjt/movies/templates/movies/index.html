@@ -3,9 +3,19 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'movies/style.css' %}" type="text/css" media="screen">
+
+<div class="col-md-8 offset-2 mb-2">
+  <!--영화 검색 -->
+  <form method="GET" class="d-flex justify-content-center">
+      <input type="text" name="searchword" value="{{searchword}}" placeholder=" 작품 제목을 검색해보세요." 
+      class="w-75 p-2" style="border-radius: 20px;">
+      <input class="btn text-white mx-2" type="submit" value="검색" style=" border: 1px solid white; border-radius: 10px;">
+  </form>
+</div>
+<div class='bg-white mb-5' style="border-radius: 20px;">
 {% if request.user.is_authenticated %}
-<h2 class='mt-5 text-info text-center'>추천 영화</h2>
-<div id="carouselExampleIndicators" class="carousel slide bg-dark" data-ride="carousel">
+<h2 class='pt-3 mt-3 text-info text-center'>추천 영화</h2>
+<div id="carouselExampleIndicators" class="carousel slide bg-dark" data-ride="carousel" style="font-family: 'Playfair Display SC';">
   <ol class="carousel-indicators">
     {% for recommend in recommends %}
       {% if forloop.first %}
@@ -56,14 +66,14 @@
 {% else %}
 {% endif %}
 
-<h2 class='mt-5 text-info text-center'>영화 리스트</h2>
+<h2 class='pt-3 text-info text-center'><u>movie list</u></h2>
 
 <section class="m-5 ">
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 card-group bg-dark p-1">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 card-group bg-dark p-2" style="border-radius: 20px;">
     {% for movie in page_obj %}
       <a href="{% url 'movies:movie_detail' movie.pk %}" class="text-decoration-none">
         <div class="card border border-dark">
-          <img src="{{movie.poster_path}}" class="card-img-top" alt="movie img1">
+          <img src="{{movie.poster_path}}" class="card-img-top" style="height: 18rem;" alt="movie img1">
         </div>
       </a>
     {% endfor %}
@@ -73,6 +83,7 @@
   {% bootstrap_paginate page_obj range=10 show_prev_next="false" show_first_last="true" %}
 </ul>
 <hr>
+</div>
 <script>
 var target = document.querySelectorAll(".card");
  

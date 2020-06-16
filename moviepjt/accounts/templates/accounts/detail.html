@@ -1,40 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class='bg-white mb-5 p-5' style="border-radius: 20px;">
+  <h1 class='text-info'>{{ user.username }}</h1>
+  <h3 class="my-3 pt-3 text-info">선호하는 장르</h3>
+  {% for gen in genre %}
+    {% if gen in request.user.like_gens.all %}
+      <button class="btn btn-danger my-1" data-pk="{{ gen.pk }}" >{{ gen.name }}</button>
+    {% else %}
+      <button class="btn btn-secondary my-1" data-pk="{{ gen.pk }}">{{ gen.name }}</button>
+    {% endif %}
+  {% endfor %}
+</div>
+<section class="container bg-white mb-5 pb-4" style="border-radius: 20px;">
+  <h3 class="my-3 pt-3 text-info">{{ user.username }}님이 좋아하는 영화 목록</h3>
 
-<h1 class='mt-5 text-info'>{{ user.username }}</h1>
-
-{% for gen in genre %}
-  {% if gen in request.user.like_gens.all %}
-    <button class="btn btn-danger my-1" data-pk="{{ gen.pk }}" >{{ gen.name }}</button>
-  {% else %}
-    <button class="btn btn-secondary my-1" data-pk="{{ gen.pk }}">{{ gen.name }}</button>
-  {% endif %}
-{% endfor %}
-<section>
-  <h3 class="my-5 text-success">{{ user.username }}님이 좋아하는 영화 목록</h3>
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+  <div class="row border border-dark mt-3">
     {% for movie in user.like_movies.all %}
-      <div class="col mb-4">
-        <a href="{% url 'movies:movie_detail' movie.pk %}" class="text-decoration-none">
-          <div class="card">
-            <img src="{{movie.poster_path}}" class="card-img-top" alt="movie img1">
-            <div class="card-body">
-              <h5 class="card-title text-center">{{ movie.title }}</h5>
-              <p class="card-text text-center">
-                {% for gen in movie.genres.all %}
-                  <button class="btn btn-secondary my-1">{{ gen.name }}</button>
-                {% endfor %}
-              </p>
-            </div>
-          </div>
-        </a>
+      <div class=" col-md-4 col-lg-3 my-3" >
+        <div class="d-flex justify-content-center mt-4"> 
+          <a href="{% url 'movies:movie_detail' movie.id %}">
+            <img src="{{movie.poster_path}}"class="card-img-top" alt="movie-img" style="height:305px; width:200px">
+          </a>
+        </div>
+        <div class="card-body">
+          <h6 class="card-title text-center" ><strong>{{movie.title|truncatechars:15}}</strong></h6>
+          <hr>
+        </div>
       </div>
     {% endfor %}
-  </div>
+    </div>
 </section>
-
-
 <script>
   const genBtns = document.querySelectorAll('.btn')
   genBtns.forEach(function(btn){

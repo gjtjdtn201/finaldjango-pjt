@@ -3,10 +3,12 @@
 {% load bootstrap4 %}
 
 {% block content %}
-<form action="" method='POST'>
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    <button class="btn btn-secondary"> 가입하기 </button>
-</form>
-
+<div class='bg-white mb-5 container p-5' style="border-radius: 20px;">
+    <h1 class="mb-5 text-info">회원가입</h1>
+    <form action="" method='POST'>
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button class="btn btn-secondary"> 가입하기 </button>
+    </form>
+</div>
 {% endblock %}
