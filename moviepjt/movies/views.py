@@ -104,7 +104,6 @@ def index(request):
     page_obj = paginator.get_page(page_number)
     if request.user.is_authenticated:
         gens = request.user.like_gens.all()
-        print(gens)
         totalcnt = 10
         if gens:
             recommends = []
@@ -118,7 +117,6 @@ def index(request):
                     'pk': z.pk, 
                     'poster_path':z.poster_path,
                     'genres':z.genres})
-                    print(z)
                     chk += 1
                     if chk == cnt:
                         break
@@ -137,8 +135,8 @@ def index(request):
         resultActor = []
         
         if searchword:
-            searchMovie = movie.filter(title__contains=searchword)
-            searchActor = actors.filter(name__contains=searchword)
+            searchMovie = movie.filter(title__icontains=searchword)
+            searchActor = actors.filter(name__icontains=searchword)
             for c in range(len(searchMovie)):
                 resultMovie.append({
                     'title':searchMovie[c].title, 
