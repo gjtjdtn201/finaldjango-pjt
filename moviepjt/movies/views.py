@@ -102,9 +102,33 @@ def index(request):
     paginator = Paginator(movies, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    if request.user.is_authenticated:
+        gens = request.user.like_gens.all()
+        print(gens)
+        totalcnt = 10
+        if gens:
+            recommends = []
+            cnt = totalcnt//len(gens)
+            for j in gens:
+                chk = 0
+                mgen = j.movie_genre.all()
+                for z in mgen:
+                    recommends.append({
+                    'title': z.title, 
+                    'pk': z.pk, 
+                    'poster_path':z.poster_path,
+                    'genres':z.genres})
+                    print(z)
+                    chk += 1
+                    if chk == cnt:
+                        break
 
-    recommends = Movie.objects.order_by('?')[:10]
+        else:
+            recommends = Movie.objects.order_by('?')[:10]
+    else:
+        recommends = ''
 
+    # 검색하는 부분
     movie = Movie.objects.all()
     actors = Actor.objects.all()
     if request.method=="GET":
@@ -115,19 +139,19 @@ def index(request):
         if searchword:
             searchMovie = movie.filter(title__contains=searchword)
             searchActor = actors.filter(name__contains=searchword)
-            if searchMovie:
-                for c in range(len(searchMovie)):
-                    resultMovie.append({
-                        'title':searchMovie[c].title, 
-                        'id':searchMovie[c].id, 
-                        'poster_path':searchMovie[c].poster_path})
-                return render(request,'movies/searchresult.html',{'searchMovie':searchMovie,'resultMovie':resultMovie, 'searchword':searchword })
-            elif searchActor:
-                # for c in range(len(searchActor)):
-                #     resultActor.append({'name':searchActor[c].name, 'id':searchActor[c].id})
-                return render(request,'movies/searchresult.html',{'searchActor':searchActor,'resultActor':resultActor})
-            else:
-                return render(request,'movies/searchresult.html',{'resultMovie':resultMovie})
+            for c in range(len(searchMovie)):
+                resultMovie.append({
+                    'title':searchMovie[c].title, 
+                    'id':searchMovie[c].id, 
+                    'poster_path':searchMovie[c].poster_path})
+
+            for c in range(len(searchActor)):
+                resultActor.append({
+                    'name':searchActor[c].name,
+                    'id': searchActor[c].id,
+                    'profile_path':searchActor[c].profile_path})
+            return render(request,'movies/searchresult.html',
+            {'resultMovie':resultMovie,'resultActor':resultActor, 'searchword':searchword})
 
     context = {
         'movies': movies,
@@ -142,7 +166,10 @@ def movie_detail(request, pk):
     score = 0
     for i in reviews:
         score += i.rank
-    score = round(score/len(reviews),1)
+    if len(reviews) == 0:
+        pass
+    else:
+        score = round(score/len(reviews),1)
     context = {
         'movie': movie,
         'score': score,

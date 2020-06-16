@@ -6,7 +6,7 @@
 
 <div class="col-md-8 offset-2 mb-4">
   <!--영화 검색 -->
-  <form method="GET" class="d-flex justify-content-center">
+  <form class="d-flex justify-content-center">
       <input type="text" name="searchword" value="{{searchword}}" placeholder=" 영화 제목을 검색해보세요." 
       class="w-75 p-2" style="border-radius: 20px;">
       <input class="btn text-white mx-2" type="submit" value="검색" style=" border: 1px solid white; border-radius: 10px;">
@@ -85,6 +85,15 @@
     </a>
   </div>
   {% else %}
+  <div class="hovereffect">
+    <div class="d-flex rounded-lg w-100 align-items-center bg-dark table-hover" style="height: 350px;">
+      <div class="d-inline w-50 col-sm-6 my-auto text-light">
+        <h4>날 위한 추천영화</h4>
+        <a class="nav-link" href="{% url 'accounts:login' %}">로그인하기</a>
+        <a class="nav-link" href="{% url 'accounts:signup' %}">회원가입</a>
+      </div>
+    </div>
+  </div>
   {% endif %}
 </div>
 <script>

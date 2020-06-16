@@ -3,7 +3,7 @@
 {% block content %}
 <div class="col-md-8 offset-2 mb-2">
   <!--영화 검색 -->
-  <form method="GET" class="d-flex justify-content-center">
+  <form class="d-flex justify-content-center">
       <input type="text" name="searchword" value="{{searchword}}" placeholder=" 영화 제목을 검색해보세요." 
       class="w-75 p-2" style="border-radius: 20px;">
       <input class="btn text-white mx-2" type="submit" value="검색" style=" border: 1px solid white; border-radius: 10px;">
@@ -11,8 +11,8 @@
 </div>
 <div class="p-4 container bg-white mb-5 mt-4" style="border-radius: 20px;">
   <br>
+  <h3 class="mx-5 text-info">"{{ searchword }}" 의 검색결과</h3>
   {% if resultMovie %}
-    <h3 class="mx-5 text-info">"{{ searchword }}" 의 검색결과</h3>
     <div class="row">
       {% for movie in resultMovie %}
         <div class=" col-md-4 col-lg-3 my-3" >
@@ -28,21 +28,25 @@
         </div>
       {% endfor %}
     </div>
-  {% else %}
-    <ul><h3>결과가 없습니다.</h3></ul>
-  {% endif %}
   <br>
-  {% if resultActor %}
-    <ul>
-      <h2 class="text-info">검색결과</h2>
-      <br>
-      {% for actor in searchActor %}
-        <a class="h5 text-dark" href="{% url 'movies:actor' actor.id %}">{{ actor.name }}</a>
-        <hr>
+  {% elif resultActor %}
+    <div class="row">
+      {% for actor in resultActor %}
+      <div class=" col-md-4 col-lg-3 my-3" >
+        <div class="d-flex justify-content-center mt-4"> 
+          <a href="{% url 'movies:actor_idx' actor.id %}">
+            <img src="{{actor.profile_path}}"class="card-img-top" alt="movie-img" style="height:305px; width:200px">
+          </a>
+        </div>
+        <div class="card-body">
+          <h6 class="card-title text-center" ><strong>{{actor.name|truncatechars:15}}</strong></h6>
+          <hr>
+        </div>
+      </div>
       {% endfor %}
-    </ul>
+    </div>
   {% else %}
-    <ul><h3>결과가 없습니다.</h3></ul>
+    <h3>결과가 없습니다.</h3>
   {% endif %}
 </div>
 {% endblock %} 
