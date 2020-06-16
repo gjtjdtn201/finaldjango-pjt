@@ -3,27 +3,24 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'movies/style.css' %}" type="text/css" media="screen">
-<div class='bg-white mb-5 container p-5' style="border-radius: 20px;">
-<div class="row col-lg-10 offset-lg-1">
-  <div class="d-flex">
-  <h2 class='text-info my-2'>{{ movie.title }}</h2>
+<div class='bg-white m-5 p-5' style="border-radius: 20px;">
+  <div class="d-flex my-2">
+    <h2 class='text-info'>{{ movie.title }}</h2>
     {% if request.user.is_superuser %}
-    <div class="d-flex ml-auto">
-      <a href="{% url 'movies:movie_update' movie.pk %}">
-          <button type="button" class="btn btn-secondary mr-2">수정</button>
+      <a href="{% url 'movies:movie_update' movie.pk %}" class="ml-auto mr-3 mt-1">
+          <button type="button" class="btn btn-secondary">수정</button>
       </a>
-      <form action="{% url 'movies:movie_delete' movie.pk %}" method="POST">
+      <form action="{% url 'movies:movie_delete' movie.pk %}" method="POST" class="mt-1">
           {% csrf_token %}
           <input class="btn btn-secondary" type="submit" value="삭제">
       </form>
-    </div>
-      {% endif %}
+    {% endif %}
   </div>
   <hr>
   <ul class="list-group">
     <li class="list-group-item">
       <div class="card mb-3 border border-white">
-        <div class="row no-gutters">
+        <div class="row">
           <div class="col-md-4">
             <img src="{{ movie.poster_path }}" class="card-img" alt="movie-img">
           </div>
@@ -64,31 +61,35 @@
     </li>
     <li class="list-group-item">
       <h3 class="text-primary m-3">주연 배우</h3>
-      <div class="card-group mx-4">
+
+      <div class="row">
         {% for actor in movie.actors.all %}
-          <div class="card">
-            <a href="{% url 'movies:actor_idx' actor.id %}">
-            <img src="{{ actor.profile_path }}" class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title text-center">{{ actor.name }}</h5>
+          <div class=" col-md-6 col-lg-4 col-xl-2 my-3" >
+            <div class="d-flex justify-content-center mt-4"> 
+              <a href="{% url 'movies:actor_idx' actor.id %}">
+                <img src="{{ actor.profile_path }}"class="card-img-top" alt="movie-img" style="height:245px; width:150px">
+              </a>
             </div>
-            </a>
+            <div class="card-body">
+              <h6 class="card-title text-center" ><strong>{{actor.name|truncatechars:15}}</strong></h6>
+              <hr>
+            </div>
           </div>
         {% endfor %}
-      </div> 
+      </div>
+
     </li>
   </ul>
-</div>
 
-<div class="d-flex">
+<div class="d-flex mt-3">
   <a href="{% url 'movies:review_create' movie.pk %}" class="ml-auto"><button class="btn btn-secondary">리뷰 쓰기</button></a>
 </div>
 <hr>
 <!-- 리뷰 게시글 -->
-<table class="table">
+<table class="table text-center">
   <thead class="thead-light">
     <tr>
-      <th scope="col">#</th>
+      <th scope="col">평점</th>
       <th scope="col">제목</th>
       <th scope="col">작성자</th>
       <th scope="col">작성 시간</th>
@@ -97,16 +98,15 @@
   <tbody>
     {% for review in movie.review_set.all %}
     <tr>
-      <th scope="row">{{ forloop.counter }}</th>
-      <td><a href="{% url 'movies:review_detail' review.movie.id review.pk %}">{{ review.title }}</a></td>
-      <td><a href="{% url 'accounts:detail' review.user %}"><p>{{ review.user }}</p></a></td>
+      <th scope="row">{{ review.rank }}</th>
+      <td><a href="{% url 'movies:review_detail' review.movie.id review.pk %}">{{ review.title|truncatechars:8 }}</a></td>
+      <td><a href="{% url 'accounts:detail' review.user %}"><p>{{ review.user|truncatechars:8 }}</p></a></td>
       <td>{{ review.updated_at }}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 </div>
-
 
 <p class="mb-5"></p>
 <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>

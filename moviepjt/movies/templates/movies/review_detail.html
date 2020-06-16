@@ -15,24 +15,22 @@
     <li class="list-group-item">글 내용: {{ review.content }}</li>
   </ul>
   <hr>
-
-  <a href="{% url 'movies:movie_detail' movie.pk %}"><button class="btn btn-secondary mb-3">뒤로가기</button></a>
-  <br>
-  {% if review.user == request.user %}
   <div class="d-flex mt-3">
-      <a href="{% url 'movies:review_update' review.movie.id review.pk %}">
-          <button type="button" class="btn btn-secondary mr-2">수정</button>
-      </a>
-      <form action="{% url 'movies:review_delete' review.movie.id review.pk %}" method="POST">
-          {% csrf_token %}
-          <input class="btn btn-secondary mb-5" type="submit" value="삭제">
-      </form>
+    <a href="{% url 'movies:movie_detail' movie.pk %}"><button class="btn btn-secondary mb-3">뒤로가기</button></a>
+    {% if review.user == request.user %}
+    <a href="{% url 'movies:review_update' review.movie.id review.pk %}" class="ml-auto">
+      <button type="button" class="btn btn-secondary mr-2">수정</button>
+    </a>
+    <form action="{% url 'movies:review_delete' review.movie.id review.pk %}" method="POST">
+        {% csrf_token %}
+        <input class="btn btn-secondary mb-5" type="submit" value="삭제">
+    </form>
+    {% endif %}
   </div>
-  {% endif %}
   <ul class="list-group d-flex">
   {% for comment in review.comment_set.all %}
     <li class="list-group-item">{{ comment.content }}</li>
-    <form action="{% url 'movies:comment_delete' review.movie.id review.pk comment.pk %}" method="POST">
+    <form action="{% url 'movies:comment_delete' review.movie.id review.pk comment.pk %}" method="POST" class="ml-auto">
       {% csrf_token %}
       <input  class="btn btn-secondary my-2" type="submit" value="삭제">
     </form>

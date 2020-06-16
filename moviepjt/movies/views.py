@@ -110,20 +110,22 @@ def index(request):
     if request.method=="GET":
         searchword = request.GET.get('searchword','')
         resultMovie = []
+        resultActor = []
         
         if searchword:
             searchMovie = movie.filter(title__contains=searchword)
             searchActor = actors.filter(name__contains=searchword)
             if searchMovie:
-                # movie_count = searchMovie.count()
                 for c in range(len(searchMovie)):
-                    resultMovie.append({'title':searchMovie[c].title, 'id':searchMovie[c].id})
-                return render(request,'movies/searchresult.html',{'searchMovie':searchMovie,'resultMovie':resultMovie})
+                    resultMovie.append({
+                        'title':searchMovie[c].title, 
+                        'id':searchMovie[c].id, 
+                        'poster_path':searchMovie[c].poster_path})
+                return render(request,'movies/searchresult.html',{'searchMovie':searchMovie,'resultMovie':resultMovie, 'searchword':searchword })
             elif searchActor:
-                # actor_count = searchActor.count()
-                for c in range(len(searchActor)):
-                    resultMovie.append({'title':searchMovie[c].title, 'id':searchMovie[c].id})
-                return render(request,'movies/searchresult.html',{'searchMovie':searchMovie,'resultMovie':resultMovie})
+                # for c in range(len(searchActor)):
+                #     resultActor.append({'name':searchActor[c].name, 'id':searchActor[c].id})
+                return render(request,'movies/searchresult.html',{'searchActor':searchActor,'resultActor':resultActor})
             else:
                 return render(request,'movies/searchresult.html',{'resultMovie':resultMovie})
 
@@ -140,6 +142,7 @@ def movie_detail(request, pk):
     score = 0
     for i in reviews:
         score += i.rank
+    score = round(score/len(reviews),1)
     context = {
         'movie': movie,
         'score': score,
@@ -238,8 +241,7 @@ def review_detail(request, pk, review_pk):
 # review 수정
 
 @login_required
-@require_POST
-def review_update(request, review_pk):
+def review_update(request, pk, review_pk):
     movie = get_object_or_404(Movie, pk=pk)
     review = get_object_or_404(Review, pk=review_pk)
     if request.user == review.user:
@@ -247,10 +249,9 @@ def review_update(request, review_pk):
             form = ReviewForm(request.POST, instance=review)
             if form.is_valid():
                 review = form.save(commit=False)
-                review.user = request.user
                 review.movie = movie
                 review.save()
-                return redirect('movies:review_detail', review.movie.id, review.pk)
+                return redirect('movies:review_detail', review.movie.pk, review.pk)
         else:
             form = ReviewForm(instance=review)
 
@@ -265,12 +266,12 @@ def review_update(request, review_pk):
 ## review 삭제
 @login_required
 @require_POST
-def review_delete(request, review_pk):
+def review_delete(request, pk, review_pk):
     review = get_object_or_404(Review, pk=review_pk)
     if request.user == review.user:
         review.delete()
 
-    return redirect('movies:movie_detail', review.pk)
+    return redirect('movies:movie_detail', review.movie.pk)
 
 
 # comment 생성, require_POST활용

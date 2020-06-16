@@ -4,85 +4,88 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'movies/style.css' %}" type="text/css" media="screen">
 
-<div class="col-md-8 offset-2 mb-2">
+<div class="col-md-8 offset-2 mb-4">
   <!--영화 검색 -->
   <form method="GET" class="d-flex justify-content-center">
-      <input type="text" name="searchword" value="{{searchword}}" placeholder=" 작품 제목을 검색해보세요." 
+      <input type="text" name="searchword" value="{{searchword}}" placeholder=" 영화 제목을 검색해보세요." 
       class="w-75 p-2" style="border-radius: 20px;">
       <input class="btn text-white mx-2" type="submit" value="검색" style=" border: 1px solid white; border-radius: 10px;">
   </form>
 </div>
 <div class='bg-white mb-5' style="border-radius: 20px;">
-{% if request.user.is_authenticated %}
-<h2 class='pt-3 mt-3 text-info text-center'>추천 영화</h2>
-<div id="carouselExampleIndicators" class="carousel slide bg-dark" data-ride="carousel" style="font-family: 'Playfair Display SC';">
-  <ol class="carousel-indicators">
-    {% for recommend in recommends %}
-      {% if forloop.first %}
-        <li data-target="#carouselExampleIndicators" data-slide-to="{{forloop.counter0}}" class="active"></li>
-      {% else %}
-        <li data-target="#carouselExampleIndicators" data-slide-to="{{forloop.counter0}}"></li>
-      {% endif %}
-    {% endfor %}
-  </ol>
-  <div class="carousel-inner">
-    {% for recommend in recommends %}
-      {% if forloop.first %}
-      <div class="carousel-item active">
-        <a href="{% url 'movies:movie_detail' recommend.pk %}">
-          <img class="d-block mx-auto w-50" src="{{recommend.poster_path}}" alt="First slide">
-          <div class="carousel-caption d-none d-md-block">
-            <h5><span class="bg-info p-1">{{ recommend.title }}</span></h5>
-            <p>{% for gen in recommend.genres.all %}
-              <button class="btn btn-secondary my-1 mx-1">{{ gen.name }}</button>
-            {% endfor %}</p>
+
+  <h2 class='pt-3 text-center' style="color:rgb(8, 8, 59);">영화 리스트</h2>
+
+  <section class="mb-5 mr-5 ml-5 mt-3">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 card-group bg-dark p-2" style="border-radius: 20px;">
+      {% for movie in page_obj %}
+        <a href="{% url 'movies:movie_detail' movie.pk %}" class="text-decoration-none">
+          <div class="card border border-dark">
+            <img src="{{movie.poster_path}}" class="card-img-top" style="height: 18rem;" alt="movie img1">
           </div>
         </a>
-        </div>
-      {% else %}
-      <div class="carousel-item ">
-        <a href="{% url 'movies:movie_detail' recommend.pk %}">
-          <img class="d-block mx-auto w-50" src="{{recommend.poster_path}}" alt="First slide">
-          <div class="carousel-caption d-none d-md-block">
-            <h5><span class="bg-info p-1">{{ recommend.title }}</span></h5>
-            <p>{% for gen in recommend.genres.all %}
-              <button class="btn btn-secondary my-1 mx-1">{{ gen.name }}</button>
-            {% endfor %}</p>
-          </div>
-        </a>
-      </div>
-      {% endif %}
-    {% endfor %}
-  </div>
-  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span>
-  </a>
-  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Next</span>
-  </a>
+      {% endfor %}
+    </div>
+  </section>
+  <ul class="mx-auto d-flex justify-content-center">
+    {% bootstrap_paginate page_obj range=10 show_prev_next="false" show_first_last="true" %}
+  </ul>
+  <hr>
 </div>
-{% else %}
-{% endif %}
-
-<h2 class='pt-3 text-info text-center'><u>movie list</u></h2>
-
-<section class="m-5 ">
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 card-group bg-dark p-2" style="border-radius: 20px;">
-    {% for movie in page_obj %}
-      <a href="{% url 'movies:movie_detail' movie.pk %}" class="text-decoration-none">
-        <div class="card border border-dark">
-          <img src="{{movie.poster_path}}" class="card-img-top" style="height: 18rem;" alt="movie img1">
+<!-- 추천 영화 -->
+<div class='bg-white mb-5 pb-5' style="border-radius: 20px;">
+  {% if request.user.is_authenticated %}
+  <h2 class='pt-3 mt-3 text-center' style="color:rgb(8, 8, 59);">추천 영화</h2>
+  <div id="carouselExampleIndicators" class="carousel slide bg-dark" data-ride="carousel" style="font-family: 'Playfair Display SC';">
+    <ol class="carousel-indicators">
+      {% for recommend in recommends %}
+        {% if forloop.first %}
+          <li data-target="#carouselExampleIndicators" data-slide-to="{{forloop.counter0}}" class="active"></li>
+        {% else %}
+          <li data-target="#carouselExampleIndicators" data-slide-to="{{forloop.counter0}}"></li>
+        {% endif %}
+      {% endfor %}
+    </ol>
+    <div class="carousel-inner">
+      {% for recommend in recommends %}
+        {% if forloop.first %}
+        <div class="carousel-item active">
+          <a href="{% url 'movies:movie_detail' recommend.pk %}">
+            <img class="d-block mx-auto w-50" src="{{recommend.poster_path}}" alt="First slide">
+            <div class="carousel-caption d-none d-md-block">
+              <h5><span class="p-1" style="background-color: rgb(8, 8, 59); border-radius: 10px;">{{ recommend.title }}</span></h5>
+              <p>{% for gen in recommend.genres.all %}
+                <button class="btn btn-secondary my-1 mx-1">{{ gen.name }}</button>
+              {% endfor %}</p>
+            </div>
+          </a>
+          </div>
+        {% else %}
+        <div class="carousel-item ">
+          <a href="{% url 'movies:movie_detail' recommend.pk %}">
+            <img class="d-block mx-auto w-50" src="{{recommend.poster_path}}" alt="First slide">
+            <div class="carousel-caption d-none d-md-block">
+              <h5><span class="p-1" style="background-color: rgb(8, 8, 59); border-radius: 10px;">{{ recommend.title }}</span></h5>
+              <p>{% for gen in recommend.genres.all %}
+                <button class="btn btn-secondary my-1 mx-1">{{ gen.name }}</button>
+              {% endfor %}</p>
+            </div>
+          </a>
         </div>
-      </a>
-    {% endfor %}
+        {% endif %}
+      {% endfor %}
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
   </div>
-</section>
-<ul class="mx-auto d-flex justify-content-center">
-  {% bootstrap_paginate page_obj range=10 show_prev_next="false" show_first_last="true" %}
-</ul>
-<hr>
+  {% else %}
+  {% endif %}
 </div>
 <script>
 var target = document.querySelectorAll(".card");

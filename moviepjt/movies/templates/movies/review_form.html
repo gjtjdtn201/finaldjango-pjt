@@ -2,11 +2,11 @@
 {% load bootstrap4 %}
 
 {% block content %}
-<div class="p-5">
+<div class='bg-white my-3 container p-5' style="border-radius: 20px;">
     {% if request.resolver_match.url_name == 'review_create' %}
         <h2 class='mb-5 text-info'>리뷰 쓰기</h2>
-        {% else %}
-        <h2 class='mt-5 text-info'>수정하기</h2>
+    {% else %}
+        <h2 class='mb-5 text-info'>수정하기</h2>
     {% endif %}
     <form action="" method="POST">
         {% csrf_token %}

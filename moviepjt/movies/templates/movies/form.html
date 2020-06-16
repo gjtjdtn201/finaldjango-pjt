@@ -2,13 +2,13 @@
 {% load bootstrap4 %}
 
 {% block content %}
-<div class='bg-white mb-5' style="border-radius: 20px;">
+<div class='bg-white my-3 container p-5' style="border-radius: 20px;">
     {% if request.resolver_match.url_name == 'movie_create' %}
-        <h2 class='mt-5 text-info'>새 영화 등록하기</h2>
+        <h2 class='mb-5 text-info'>새 영화 등록하기</h2>
     {% else %}
-        <h2 class='mt-5 text-info'>영화 수정하기</h2>
+        <h2 class='mb-5 text-info'>영화 수정하기</h2>
     {% endif %}
-    <hr>
+
     <form action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form form %}
