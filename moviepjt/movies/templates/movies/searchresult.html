@@ -45,6 +45,14 @@
       </div>
       {% endfor %}
     </div>
+  {% elif resultGenre %}
+    <div class="row m-5">
+      {% for gen in resultGenre %}
+      <a href="{% url 'movies:genre_idx' gen.id %}" class="text-decoration-none mx-3">
+        <button class="btn btn-secondary my-1">{{ gen.name }}</button>
+      </a>
+      {% endfor %}
+    </div>
   {% else %}
     <img src="/media/sorry.jpg" alt="sorry-img" class="mx-auto d-none d-md-block mt-3">
     <hr>

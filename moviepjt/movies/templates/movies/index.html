@@ -7,12 +7,41 @@
 <div class="mb-4">
   <!--영화 검색 -->
   <form class="d-flex justify-content-center">
-      <input type="text" name="searchword" value="{{searchword}}" placeholder=" 영화 제목이나 배우를 검색하세요." 
+    <button type="button" class="btn text-white mx-2" data-toggle="modal" data-target="#exampleModal"
+    style=" border: 1px solid white; border-radius: 10px;">
+      EX
+    </button>
+      <input type="text" name="searchword" value="{{searchword}}" placeholder=" 영화 제목, 배우, 장르를 검색하세요." 
       class="w-75 p-2" style="border-radius: 20px;">
       <input class="btn text-white mx-2" type="submit" value="검색" style=" border: 1px solid white; border-radius: 10px;">
   </form>
 </div>
 <div class='bg-white mb-5' style="border-radius: 20px;">
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">검색 방법</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        영화 제목은 한글로 !
+        <br>
+        영화 배우는 영어로 !
+        <br>
+        장르는 띄어쓰기 꼭 해주세요!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
   <h2 class='pt-3 text-center' style="color:rgb(8, 8, 59);">영화 리스트</h2>
 

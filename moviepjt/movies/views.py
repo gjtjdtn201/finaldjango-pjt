@@ -130,14 +130,17 @@ def index(request):
     # 검색하는 부분
     movie = Movie.objects.all()
     actors = Actor.objects.all()
+    genres = Genre.objects.all()
     if request.method=="GET":
         searchword = request.GET.get('searchword','')
         resultMovie = []
         resultActor = []
+        resultGenre = []
         
         if searchword:
             searchMovie = movie.filter(title__icontains=searchword)
             searchActor = actors.filter(name__icontains=searchword)
+            searchGenre = list(searchword.split())
             for c in range(len(searchMovie)):
                 resultMovie.append({
                     'title':searchMovie[c].title, 
@@ -149,8 +152,15 @@ def index(request):
                     'name':searchActor[c].name,
                     'id': searchActor[c].id,
                     'profile_path':searchActor[c].profile_path})
-            return render(request,'movies/searchresult.html',
-            {'resultMovie':resultMovie,'resultActor':resultActor, 'searchword':searchword})
+
+            for c in searchGenre:
+                try:
+                    resultGenre.append(Genre.objects.get(name=c))
+                except:
+                    continue
+            
+            return render(request,'movies/searchresult.html', 
+            {'resultMovie':resultMovie,'resultActor':resultActor,'resultGenre':resultGenre,'searchword':searchword})
 
     context = {
         'movies': movies,
