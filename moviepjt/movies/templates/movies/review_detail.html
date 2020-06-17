@@ -9,9 +9,10 @@
   <ul class="list-group mb-3">
     <li class="list-group-item">글 번호: {{ review.pk }}</li>
     <li class="list-group-item">글 제목: {{ review.title }}</li>
+    <li class="list-group-item">리뷰 영화 : {{ review.movie.title }}</li>
     <li class="list-group-item">작성 시간 : {{ review.created_at }}</li>
     <li class="list-group-item">수정 시간 : {{ review.updated_at }}</li>
-    <li class="list-group-item">평점: <span class="star-prototype mr-2">{{ review.rank }}</span>{{ review.rank }}점</li>
+    <li class="list-group-item">평점: <span class="star-prototype mr-2">{{ review.rank }}</span><b>{{ review.rank }}점</b></li>
     <li class="list-group-item">글 내용: {{ review.content }}</li>
   </ul>
   <hr>

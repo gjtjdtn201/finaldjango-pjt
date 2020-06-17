@@ -116,7 +116,8 @@ def index(request):
                     'title': z.title, 
                     'pk': z.pk, 
                     'poster_path':z.poster_path,
-                    'genres':z.genres})
+                    'genres':z.genres,
+                    'overview':z.overview})
                     chk += 1
                     if chk == cnt:
                         break

@@ -5,22 +5,22 @@
 <!-- 리뷰 게시글 -->
 <div class='bg-white mb-5 p-5' style="border-radius: 20px;">
   <h1 class="mb-5">Community</h1>
-  <table class="table mt-1">
+  <table class="table mt-1 text-center">
     <thead class="thead-light">
       <tr>
         <th scope="col">#</th>
         <th scope="col">제목</th>
         <th scope="col">작성자</th>
-        <th scope="col">작성 시간</th>
+        <th scope="col" class="d-none d-sm-block">작성 시간</th>
       </tr>
     </thead>
     <tbody>
       {% for review in reviews %}
       <tr>
         <th scope="row">{{ forloop.counter }}</th>
-        <td><a href="{% url 'movies:review_detail' review.movie.id review.pk %}">{{ review.title }}</a></td>
-        <td><a href="{% url 'accounts:detail' review.user %}"><p>{{ review.user }}</p></a></td>
-        <td>{{ review.updated_at }}</td>
+        <td><a href="{% url 'movies:review_detail' review.movie.id review.pk %}">{{ review.title|truncatechars:8  }}</a></td>
+        <td><a href="{% url 'accounts:detail' review.user %}"><p>{{ review.user|truncatechars:8 }}</p></a></td>
+        <td class="d-none d-sm-block">{{ review.updated_at }}</td>
       </tr>
       {% endfor %}
     </tbody>

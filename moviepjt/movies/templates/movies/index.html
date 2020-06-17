@@ -4,10 +4,10 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'movies/style.css' %}" type="text/css" media="screen">
 
-<div class="col-md-8 offset-2 mb-4">
+<div class="mb-4">
   <!--영화 검색 -->
   <form class="d-flex justify-content-center">
-      <input type="text" name="searchword" value="{{searchword}}" placeholder=" 영화 제목을 검색해보세요." 
+      <input type="text" name="searchword" value="{{searchword}}" placeholder=" 영화 제목이나 배우를 검색하세요." 
       class="w-75 p-2" style="border-radius: 20px;">
       <input class="btn text-white mx-2" type="submit" value="검색" style=" border: 1px solid white; border-radius: 10px;">
   </form>
@@ -28,7 +28,7 @@
     </div>
   </section>
   <ul class="mx-auto d-flex justify-content-center">
-    {% bootstrap_paginate page_obj range=10 show_prev_next="false" show_first_last="true" %}
+    {% bootstrap_paginate page_obj range=6 show_prev_next="false" show_first_last="true" %}
   </ul>
   <hr>
 </div>
@@ -49,26 +49,30 @@
     <div class="carousel-inner">
       {% for recommend in recommends %}
         {% if forloop.first %}
-        <div class="carousel-item active">
+        <div class="carousel-item active hovereffect">
           <a href="{% url 'movies:movie_detail' recommend.pk %}">
             <img class="d-block mx-auto w-50" src="{{recommend.poster_path}}" alt="First slide">
-            <div class="carousel-caption d-none d-md-block">
-              <h5><span class="p-1" style="background-color: rgb(8, 8, 59); border-radius: 10px;">{{ recommend.title }}</span></h5>
-              <p>{% for gen in recommend.genres.all %}
+            <div class="carousel-caption d-none d-sm-block overlay">
+              <h5 class="mt-5"><span class="p-1" style="background-color: rgb(8, 8, 59); border-radius: 10px;">{{ recommend.title }}</span></h5>
+              <p class="d-none d-md-block">{% for gen in recommend.genres.all %}
                 <button class="btn btn-secondary my-1 mx-1">{{ gen.name }}</button>
               {% endfor %}</p>
+              <hr>
+              <p class="w-50 mx-auto">{{recommend.overview|truncatechars:80}}</p>
             </div>
           </a>
           </div>
         {% else %}
-        <div class="carousel-item ">
+        <div class="carousel-item hovereffect">
           <a href="{% url 'movies:movie_detail' recommend.pk %}">
             <img class="d-block mx-auto w-50" src="{{recommend.poster_path}}" alt="First slide">
-            <div class="carousel-caption d-none d-md-block">
-              <h5><span class="p-1" style="background-color: rgb(8, 8, 59); border-radius: 10px;">{{ recommend.title }}</span></h5>
-              <p>{% for gen in recommend.genres.all %}
+            <div class="carousel-caption d-none d-sm-block overlay">
+              <h5 class="mt-5"><span class="p-1" style="background-color: rgb(8, 8, 59); border-radius: 10px;">{{ recommend.title }}</span></h5>
+              <p class="d-none d-md-block">{% for gen in recommend.genres.all %}
                 <button class="btn btn-secondary my-1 mx-1">{{ gen.name }}</button>
               {% endfor %}</p>
+              <hr>
+              <p class="w-50 mx-auto">{{recommend.overview|truncatechars:80}}</p>
             </div>
           </a>
         </div>
@@ -87,7 +91,7 @@
   {% else %}
   <div class="hovereffect">
     <div class="d-flex rounded-lg w-100 align-items-center bg-dark table-hover" style="height: 350px;">
-      <div class="d-inline w-50 col-sm-6 my-auto text-light">
+      <div class="d-inline w-75 col-sm-6 my-auto text-light">
         <h4>날 위한 추천영화</h4>
         <a class="nav-link" href="{% url 'accounts:login' %}">로그인하기</a>
         <a class="nav-link" href="{% url 'accounts:signup' %}">회원가입</a>

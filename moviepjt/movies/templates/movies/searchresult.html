@@ -9,7 +9,7 @@
       <input class="btn text-white mx-2" type="submit" value="검색" style=" border: 1px solid white; border-radius: 10px;">
   </form>
 </div>
-<div class="p-4 container bg-white mb-5 mt-4" style="border-radius: 20px;">
+<div class="p-4 bg-white mb-5 mt-4" style="border-radius: 20px;">
   <br>
   <h3 class="mx-5 text-info">"{{ searchword }}" 의 검색결과</h3>
   {% if resultMovie %}
@@ -22,7 +22,7 @@
             </a>
           </div>
           <div class="card-body">
-            <h6 class="card-title text-center" ><strong>{{movie.title|truncatechars:15}}</strong></h6>
+            <h6 class="card-title text-center" ><b>{{movie.title|truncatechars:15}}</b></h6>
             <hr>
           </div>
         </div>
@@ -39,14 +39,16 @@
           </a>
         </div>
         <div class="card-body">
-          <h6 class="card-title text-center" ><strong>{{actor.name|truncatechars:15}}</strong></h6>
+          <h6 class="card-title text-center" ><b>{{actor.name|truncatechars:15}}</b></h6>
           <hr>
         </div>
       </div>
       {% endfor %}
     </div>
   {% else %}
-    <h3>결과가 없습니다.</h3>
+    <img src="/media/sorry.jpg" alt="sorry-img" class="mx-auto d-none d-md-block mt-3">
+    <hr>
+    <h3 class="m-5 text-center">다른 검색어로 부탁드립니다 ㅠㅠ</h3>
   {% endif %}
 </div>
 {% endblock %} 
