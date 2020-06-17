@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load bootstrap_pagination %}
+
+{% block content %}
+   
+<section class="container bg-white mb-2 pb-2" style="border-radius: 20px;">
+  <h3 class="my-3 pt-3 text-info">{{ genres.name }} 태그의 영화</h3>
+
+  <div class="row border border-dark mt-3">
+    {% for movie in page_obj %}
+      <div class=" col-md-4 col-lg-3 my-3" >
+        <div class="d-flex justify-content-center mt-4"> 
+          <a href="{% url 'movies:movie_detail' movie.id %}">
+            <img src="{{movie.poster_path}}"class="card-img-top" alt="movie-img" style="height:305px; width:200px">
+          </a>
+        </div>
+        <div class="card-body">
+          <h6 class="card-title text-center" ><b>{{movie.title|truncatechars:15}}</b></h6>
+          <hr>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <ul class="mx-auto d-flex justify-content-center mt-3">
+    {% bootstrap_paginate page_obj range=6 show_prev_next="false" show_first_last="true" %}
+  </ul>
+</section>
+<p class="mb-5"></p>
+{% endblock %}

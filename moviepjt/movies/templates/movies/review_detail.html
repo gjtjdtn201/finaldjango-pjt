@@ -28,12 +28,14 @@
     </form>
     {% endif %}
   </div>
-  <ul class="list-group d-flex">
+  <ul class="list-group d-flex mb-2">
   {% for comment in review.comment_set.all %}
     <li class="list-group-item">{{ comment.content }}</li>
     <form action="{% url 'movies:comment_delete' review.movie.id review.pk comment.pk %}" method="POST" class="ml-auto">
       {% csrf_token %}
+      {% if request.user == comment.user %}
       <input  class="btn btn-secondary my-2" type="submit" value="삭제">
+      {% endif %}
     </form>
   {% endfor %}
   </ul>

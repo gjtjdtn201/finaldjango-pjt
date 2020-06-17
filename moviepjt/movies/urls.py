@@ -21,5 +21,6 @@ urlpatterns = [
     path('<int:pk>/<int:review_pk>/like/', views.like, name="like"),
     path('actor/<int:actor_id>/', views.actor_idx, name='actor_idx'),
     path('community/', views.community, name='community'),
+    path('genre/<int:genre_id>/', views.genre_idx, name='genre_idx'),
 
     ]

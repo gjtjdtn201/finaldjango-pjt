@@ -3,6 +3,7 @@
 {% block content %}
 <div class='bg-white mb-5 p-5' style="border-radius: 20px;">
   <h1 class='text-info'>{{ user.username }}</h1>
+  {% if request.user == user %}
   <h3 class="my-3 pt-3 text-info">선호하는 장르</h3>
   {% for gen in genre %}
     {% if gen in request.user.like_gens.all %}
@@ -11,6 +12,7 @@
       <button class="btn btn-secondary my-1" data-pk="{{ gen.pk }}">{{ gen.name }}</button>
     {% endif %}
   {% endfor %}
+  {% endif %}
 </div>
 <section class="container bg-white mb-5 pb-4" style="border-radius: 20px;">
   <h3 class="my-3 pt-3 text-info">{{ user.username }}님이 좋아하는 영화 목록</h3>

@@ -55,7 +55,9 @@
             <div class="carousel-caption d-none d-sm-block overlay">
               <h5 class="mt-5"><span class="p-1" style="background-color: rgb(8, 8, 59); border-radius: 10px;">{{ recommend.title }}</span></h5>
               <p class="d-none d-md-block">{% for gen in recommend.genres.all %}
-                <button class="btn btn-secondary my-1 mx-1">{{ gen.name }}</button>
+                <a href="{% url 'movies:genre_idx' gen.id %}" class="text-decoration-none">
+                  <button class="btn btn-secondary my-1 mx-1">{{ gen.name }}</button>
+                </a>
               {% endfor %}</p>
               <hr>
               <p class="w-50 mx-auto">{{recommend.overview|truncatechars:80}}</p>
@@ -69,7 +71,9 @@
             <div class="carousel-caption d-none d-sm-block overlay">
               <h5 class="mt-5"><span class="p-1" style="background-color: rgb(8, 8, 59); border-radius: 10px;">{{ recommend.title }}</span></h5>
               <p class="d-none d-md-block">{% for gen in recommend.genres.all %}
-                <button class="btn btn-secondary my-1 mx-1">{{ gen.name }}</button>
+                <a href="{% url 'movies:genre_idx' gen.id %}" class="text-decoration-none">
+                  <button class="btn btn-secondary my-1 mx-1">{{ gen.name }}</button>
+                </a>
               {% endfor %}</p>
               <hr>
               <p class="w-50 mx-auto">{{recommend.overview|truncatechars:80}}</p>

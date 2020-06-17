@@ -339,3 +339,16 @@ def community(request):
         'reviews': reviews,
     }
     return render(request, 'movies/community.html', context)
+
+def genre_idx(request, genre_id):
+    genres = Genre.objects.get(id=genre_id)
+    movies = genres.movie_genre.all()
+    paginator = Paginator(movies, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'genres': genres,
+        'page_obj' : page_obj,
+    }
+    return render(request, 'movies/genre.html', context)
