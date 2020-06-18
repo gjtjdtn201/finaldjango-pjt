@@ -10,7 +10,7 @@
 
 ### 개발 프로그램
 
-![icon](C:\Users\HSS\Desktop\ssafy_pjt\기말프로젝트\READMEimg\icon.png)
+![icon](./READMEimg/icon.png)
 
 ---
 
