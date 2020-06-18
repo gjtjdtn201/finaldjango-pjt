@@ -7,8 +7,9 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.contrib.auth.decorators import user_passes_test
 import requests
+from decouple import config
 
-MYKEY = '2e55b602956681cb520a7d64930d1274'
+MYKEY = config('MYKEY')
 n = 1
 
 def takeGenre(request):
@@ -131,12 +132,12 @@ def index(request):
     movie = Movie.objects.all()
     actors = Actor.objects.all()
     genres = Genre.objects.all()
+
     if request.method=="GET":
         searchword = request.GET.get('searchword','')
         resultMovie = []
         resultActor = []
         resultGenre = []
-        
         if searchword:
             searchMovie = movie.filter(title__icontains=searchword)
             searchActor = actors.filter(name__icontains=searchword)
@@ -158,7 +159,6 @@ def index(request):
                     resultGenre.append(Genre.objects.get(name=c))
                 except:
                     continue
-            
             return render(request,'movies/searchresult.html', 
             {'resultMovie':resultMovie,'resultActor':resultActor,'resultGenre':resultGenre,'searchword':searchword})
 
@@ -345,9 +345,16 @@ def actor_idx(request, actor_id):
 
 def community(request):
     reviews = Review.objects.order_by('-pk')
+
+    paginator = Paginator(reviews, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
         'reviews': reviews,
+        'page_obj' : page_obj,
     }
+
     return render(request, 'movies/community.html', context)
 
 def genre_idx(request, genre_id):

@@ -17,7 +17,7 @@
     <tbody>
       {% for review in reviews %}
       <tr>
-        <th scope="row">{{ forloop.counter }}</th>
+        <th scope="row">{{ forloop.revcounter }}</th>
         <td><a href="{% url 'movies:review_detail' review.movie.id review.pk %}">{{ review.title|truncatechars:8  }}</a></td>
         <td><a href="{% url 'accounts:detail' review.user %}"><p>{{ review.user|truncatechars:8 }}</p></a></td>
         <td class="d-none d-sm-block">{{ review.updated_at }}</td>
