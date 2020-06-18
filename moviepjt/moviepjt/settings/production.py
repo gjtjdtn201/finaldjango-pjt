@@ -4,5 +4,5 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     '.compute.amazonaws.com',
-    '52.79.58.212',
+    '3.34.192.153',
 ]
