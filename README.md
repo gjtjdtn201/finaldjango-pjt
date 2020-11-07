@@ -8,6 +8,10 @@
 
 ---
 
+![img](./READMEimg/more.gif)
+
+---
+
 ### 개발 프로그램
 
 ![icon](./READMEimg/icon.png)
